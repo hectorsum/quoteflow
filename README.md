@@ -7,6 +7,8 @@ Industrial** (distribuidor B2B de equipamiento industrial) en la preparación de
 
 > El MVP **nunca envía** al cliente: solo genera borradores para revisión humana.
 
+![Home Aplicacion](docs/images/app.png)
+
 ---
 
 ## Qué hace
