@@ -95,6 +95,7 @@ async def lookup_domain_node(state: QuoteState) -> dict:
 
     product = lookup_product(item.sku_hint)
     product_found = product["found"]
+    product_name = product.get("name") if product_found else None
     stock_available = False
 
     updated_item = item.model_copy()
@@ -115,6 +116,7 @@ async def lookup_domain_node(state: QuoteState) -> dict:
     return {
         "customer_name": customer_name,
         "customer_tier": customer_tier,
+        "product_name": product_name,
         "extracted_items": [updated_item],
         "product_found": product_found,
         "stock_available": stock_available,
@@ -204,6 +206,7 @@ async def draft_quote_node(state: QuoteState) -> dict:
     context = (
         f"Cliente: {state.customer_name} (Tier: {calc.applied_tier})\n"
         f"Producto SKU: {calc.sku}\n"
+        f"Descripción: {state.product_name or 'Sin especificar'}\n"
         f"Cantidad: {calc.quantity} unidades\n"
         f"Precio unitario: USD {calc.unit_price:,.2f}\n"
         f"Subtotal: USD {calc.subtotal:,.2f}\n"

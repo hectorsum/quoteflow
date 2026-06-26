@@ -44,6 +44,7 @@ class QuoteState(BaseModel):
     # Dominio
     customer_name: str | None = None
     customer_tier: str | None = None
+    product_name: str | None = None
     product_found: bool = False
     stock_available: bool = False
 
