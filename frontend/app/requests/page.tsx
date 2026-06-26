@@ -1,16 +1,16 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { api, QuoteListItem } from "@/lib/api";
 import { StatusBadge } from "@/components/quote/StatusBadge";
 import { RequestForm } from "@/components/quote/RequestForm";
 
 export default function RequestsPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [quotes, setQuotes] = useState<QuoteListItem[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const fetchQuotes = async () => {
     try {
@@ -25,69 +25,75 @@ export default function RequestsPage() {
 
   useEffect(() => {
     fetchQuotes();
-    // Polling deshabilitado por ahora — el usuario puede recargar manualmente
-    // intervalRef.current = setInterval(fetchQuotes, 3000);
-    // return () => {
-    //   if (intervalRef.current) clearInterval(intervalRef.current);
-    // };
   }, []);
 
+  // Abrir el modal si se llega con ?new=1 (desde el sidebar)
+  useEffect(() => {
+    if (searchParams.get("new") === "1") setShowForm(true);
+  }, [searchParams]);
+
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex justify-between items-center">
+    <div className="px-10 py-8">
+      {/* Header */}
+      <header className="flex items-start justify-between border-b border-line pb-6 mb-8">
         <div>
-          <h1 className="text-xl font-semibold text-white">Solicitudes de cotización</h1>
-          <p className="text-gray-400 text-sm mt-0.5">
+          <p className="text-ink-400 text-xs tracking-[0.18em] uppercase">Bandeja</p>
+          <h1 className="font-serif text-4xl font-semibold text-ink-900 mt-1">Solicitudes</h1>
+          <p className="text-ink-500 text-sm mt-2">
             {quotes.length} solicitud{quotes.length !== 1 ? "es" : ""} registrada{quotes.length !== 1 ? "s" : ""}
           </p>
         </div>
         <button
           onClick={() => setShowForm(true)}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm font-medium"
+          className="flex items-center gap-2 bg-clay-500 hover:bg-clay-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium shadow-card transition-colors"
         >
-          + Nueva solicitud
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+          Nueva
         </button>
-      </div>
+      </header>
 
       {loading ? (
-        <p className="text-gray-500 text-sm">Cargando...</p>
+        <p className="text-ink-400 text-sm">Cargando...</p>
       ) : quotes.length === 0 ? (
-        <div className="border border-dashed border-gray-700 rounded-lg p-12 text-center">
-          <p className="text-gray-500">No hay solicitudes aún.</p>
+        <div className="bg-white rounded-xl border border-dashed border-line p-14 text-center">
+          <p className="text-ink-500">No hay solicitudes aún.</p>
           <button
             onClick={() => setShowForm(true)}
-            className="mt-3 text-blue-400 hover:text-blue-300 text-sm"
+            className="mt-3 text-clay-600 hover:text-clay-700 text-sm font-medium"
           >
             Crear la primera solicitud →
           </button>
         </div>
       ) : (
-        <div className="border border-gray-800 rounded-lg overflow-hidden">
+        <div className="bg-white rounded-xl border border-line shadow-card overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="bg-gray-900 border-b border-gray-800">
-              <tr>
-                <th className="text-left px-4 py-3 text-gray-400 font-medium">ID</th>
-                <th className="text-left px-4 py-3 text-gray-400 font-medium">Cliente</th>
-                <th className="text-left px-4 py-3 text-gray-400 font-medium">Estado</th>
-                <th className="text-left px-4 py-3 text-gray-400 font-medium">Fecha</th>
+            <thead>
+              <tr className="border-b border-line">
+                <th className="text-left px-6 py-3.5 text-ink-400 font-medium text-xs uppercase tracking-wider">ID</th>
+                <th className="text-left px-6 py-3.5 text-ink-400 font-medium text-xs uppercase tracking-wider">Cliente</th>
+                <th className="text-left px-6 py-3.5 text-ink-400 font-medium text-xs uppercase tracking-wider">Estado</th>
+                <th className="text-right px-6 py-3.5 text-ink-400 font-medium text-xs uppercase tracking-wider">Fecha</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-800">
-              {quotes.map(q => (
+            <tbody className="divide-y divide-line">
+              {quotes.map((q) => (
                 <tr
                   key={q.id}
                   onClick={() => router.push(`/requests/${q.id}`)}
-                  className="hover:bg-gray-900 cursor-pointer transition-colors"
+                  className="hover:bg-cream-50 cursor-pointer transition-colors"
                 >
-                  <td className="px-4 py-3 font-mono text-gray-300 text-xs">
-                    {q.id.slice(0, 8)}...
-                  </td>
-                  <td className="px-4 py-3 text-gray-200">{q.customer_id}</td>
-                  <td className="px-4 py-3">
+                  <td className="px-6 py-4 font-mono text-ink-400 text-xs">{q.id.slice(0, 8)}</td>
+                  <td className="px-6 py-4 text-ink-900 font-medium">{q.customer_id}</td>
+                  <td className="px-6 py-4">
                     <StatusBadge status={q.status} />
                   </td>
-                  <td className="px-4 py-3 text-gray-400 text-xs">
-                    {new Date(q.created_at).toLocaleString("es-PE")}
+                  <td className="px-6 py-4 text-ink-400 text-xs text-right">
+                    {new Date(q.created_at).toLocaleString("es-PE", {
+                      day: "2-digit", month: "short", year: "numeric",
+                      hour: "2-digit", minute: "2-digit",
+                    })}
                   </td>
                 </tr>
               ))}
