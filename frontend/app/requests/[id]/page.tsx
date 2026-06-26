@@ -70,7 +70,7 @@ export default function QuoteDetailPage() {
       </div>
 
       <Section title="Solicitud original">
-        <p className="text-gray-200 text-sm leading-relaxed">{quote.raw_request}</p>
+        <p className="text-gray-200 text-sm leading-relaxed">{gs?.raw_request || "Sin información"}</p>
       </Section>
 
       {gs && gs.extracted_items.length > 0 && (
