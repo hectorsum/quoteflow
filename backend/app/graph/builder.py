@@ -51,7 +51,9 @@ def build_graph(checkpointer):
         "human_approval": "human_approval",
         "draft": "draft",
     })
-    builder.add_edge("human_approval", END)  # interrupt_before pausa aquí
+    # interrupt_before pausa ANTES de human_approval; al reanudar, human_approval
+    # ejecuta y el flujo continúa hacia apply_decision para aplicar la decisión.
+    builder.add_edge("human_approval", "apply_decision")
     builder.add_conditional_edges("apply_decision", route_after_decision, {
         "draft": "draft",
         "reject": "reject",

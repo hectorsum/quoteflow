@@ -184,6 +184,9 @@ async def calculate_node(state: QuoteState) -> dict:
         "calculation": calculation,
         "requires_human_approval": requires_approval,
         "approval_reasons": reasons,
+        # Si requiere aprobación, el grafo se pausa ANTES de human_approval;
+        # fijamos el status aquí para que la pausa sea visible en la UI/DB.
+        "status": "awaiting_approval" if requires_approval else "calculating",
         "nodes_visited": _visited(state, node),
         "audit_log": _log(state, node, f"total={calculation.total_usd:.2f} requires_approval={requires_approval}"),
     }
@@ -250,11 +253,15 @@ async def clarify_node(state: QuoteState) -> dict:
         fields = ", ".join(state.missing_fields)
         msg = f"Faltan datos obligatorios para procesar la cotización: {fields}. Por favor, proporcione esta información."
 
+    # Preservar el status específico cuando el caso se detuvo por dominio
+    # (cliente/producto desconocido o sin stock); solo la falta de info usa "clarification".
+    final_status = status if status in ("unknown_customer", "unknown_product", "no_stock") else "clarification"
+
     return {
         "clarification_request": msg,
-        "status": "clarification",
+        "status": final_status,
         "nodes_visited": _visited(state, node),
-        "audit_log": _log(state, node, f"clarification: {msg}"),
+        "audit_log": _log(state, node, f"{final_status}: {msg}"),
     }
 
 
