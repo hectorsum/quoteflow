@@ -1,7 +1,8 @@
 import aiosqlite
 from datetime import datetime, timezone
+from app.core.config import settings
 
-DATABASE_PATH = "./quoteflow.db"
+DATABASE_PATH = settings.database_path
 
 
 async def init_db():
