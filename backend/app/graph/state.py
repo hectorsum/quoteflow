@@ -31,6 +31,7 @@ class HumanDecision(BaseModel):
 
 class QuoteState(BaseModel):
     # Entrada
+    quote_id: str = ""
     customer_id: str = ""
     raw_request: str = ""
 
