@@ -34,8 +34,8 @@ export function RequestForm({ onClose }: Props) {
       const res = await api.createQuote(customerId, rawRequest);
       onClose();
       router.push(`/requests/${res.quote_id}`);
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Error al crear la solicitud");
     } finally {
       setLoading(false);
     }

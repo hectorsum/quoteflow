@@ -1,11 +1,20 @@
 "use client";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { api, QuoteListItem } from "@/lib/api";
 import { StatusBadge } from "@/components/quote/StatusBadge";
 import { RequestForm } from "@/components/quote/RequestForm";
 
 export default function RequestsPage() {
+  // useSearchParams requiere un límite de Suspense para el build de Next.
+  return (
+    <Suspense fallback={<div className="px-10 py-8 text-ink-400 text-sm">Cargando...</div>}>
+      <RequestsInner />
+    </Suspense>
+  );
+}
+
+function RequestsInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [quotes, setQuotes] = useState<QuoteListItem[]>([]);

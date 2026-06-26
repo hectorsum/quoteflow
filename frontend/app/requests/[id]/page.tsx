@@ -18,9 +18,9 @@ export default function QuoteDetailPage() {
       const data = await api.getQuote(id);
       setQuote(data);
       setError(null);
-    } catch (e: any) {
+    } catch (e) {
       console.error("Error fetching quote:", e);
-      setError(e.message);
+      setError(e instanceof Error ? e.message : "Error al cargar la solicitud");
     } finally {
       setLoading(false);
     }
@@ -36,8 +36,8 @@ export default function QuoteDetailPage() {
     try {
       await api.resumeQuote(id, { action, comment, decided_by: "executive" });
       await fetchQuote();
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Error al procesar la decisión");
     }
     setResuming(false);
   }
