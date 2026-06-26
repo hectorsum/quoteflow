@@ -54,7 +54,7 @@ export default function QuoteDetailPage() {
   const gs = quote.graph_state;
 
   return (
-    <div className="space-y-6 max-w-3xl">
+    <div className="flex flex-col gap-6 max-w-3xl">
       <div className="flex items-start justify-between">
         <div className="space-y-1">
           <button onClick={() => router.push("/requests")} className="text-gray-500 hover:text-gray-300 text-xs">
@@ -121,10 +121,10 @@ export default function QuoteDetailPage() {
           <div className="grid grid-cols-2 gap-4 text-xs">
             <Field label="SKU" value={gs.calculation.sku} mono />
             <Field label="Cantidad" value={String(gs.calculation.quantity)} />
-            <Field label="Precio unitario" value={`USD ${gs.calculation.unit_price_usd.toFixed(2)}`} />
-            <Field label="Descuento aplicado" value={`${(gs.calculation.applied_discount * 100).toFixed(1)}%`} />
-            <Field label="Subtotal" value={`USD ${gs.calculation.subtotal_usd.toLocaleString("es-PE", { minimumFractionDigits: 2 })}`} />
-            <Field label="Descuento (monto)" value={`USD ${gs.calculation.discount_amount_usd.toLocaleString("es-PE", { minimumFractionDigits: 2 })}`} />
+            <Field label="Precio unitario" value={`USD ${gs.calculation.unit_price.toFixed(2)}`} />
+            <Field label="Descuento aplicado" value={`${(gs.calculation.discount_pct * 100).toFixed(1)}%`} />
+            <Field label="Subtotal" value={`USD ${gs.calculation.subtotal.toLocaleString("es-PE", { minimumFractionDigits: 2 })}`} />
+            <Field label="Descuento (monto)" value={`USD ${gs.calculation.discount_amount.toLocaleString("es-PE", { minimumFractionDigits: 2 })}`} />
           </div>
           <div className="mt-3 pt-3 border-t border-gray-700 flex justify-between items-center">
             <span className="text-gray-400 text-sm">Total</span>
