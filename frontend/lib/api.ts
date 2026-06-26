@@ -33,13 +33,12 @@ export interface ExtractedItem {
 export interface QuoteCalculation {
   sku: string;
   quantity: number;
-  unit_price_usd: number;
-  applied_discount: number;
-  subtotal_usd: number;
-  discount_amount_usd: number;
+  unit_price: number;
+  discount_pct: number;
+  subtotal: number;
+  discount_amount: number;
   total_usd: number;
-  requires_approval: boolean;
-  approval_reasons: string[];
+  applied_tier: string;
 }
 
 export interface HumanDecision {
